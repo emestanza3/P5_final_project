@@ -16,3 +16,52 @@ a {
     font-size: 13px;
     text-decoration: underline;
 }
+
+.axis {
+  shape-rendering: crispEdges;
+}
+
+.axis line {
+  stroke: #ddd;
+}
+
+.axis .axis-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-anchor: middle;
+  fill: #555;
+}
+
+.frame {
+  fill: none;
+  stroke: none;
+}
+
+circle {
+  fill-opacity: 1;
+}
+
+circle.hidden {
+  fill: #ccc !important;
+  fill-opacity: .1;
+}
+
+.dot text {
+    text-anchor: middle;
+    font-size: 10px;
+    pointer-events: none;
+    fill: #555;
+}
+
+.dot text {
+    opacity: 0;
+}
+
+.dot:hover text {
+    opacity: 1;
+}
+
+label {
+	font-size: 20px;
+	text-anchor: middle;
+}
