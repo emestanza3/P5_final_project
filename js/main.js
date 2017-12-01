@@ -81,6 +81,39 @@ function SplomCell(x) {
 	this.x = x;
 }
 
+// uses the d3-tip.js so than on a mouse over a single item in wither chart details of it will be displayed to the user.
+var tooltip = d3.tip()
+	.attr('class', 'd3-tip')
+	.offset([-12, 0])
+	.html(function(d) {
+		var director = "Unkown";
+		var dir_likes = "Unkown";
+		var actor3_likes = "Unkown";
+		var actor2_likes = "Unkown";
+		var actor1_likes = "Unkown";
+		var actor2 = "Unkown";
+		var actor1 = "Unkown";
+		var actor3 = "Unkown";
+		if (d['director_name'] != undefined) director = d['director_name'];
+		if (d["director_facebook_likes"] != undefined) dir_likes = d['director_facebook_likes'];
+		if (d['actor_3_facebook_likes'] != undefined) actor3_likes = d['actor_3_facebook_likes'];
+		if (d['actor_2_facebook_likes'] != undefined) actor2_likes = d['actor_2_facebook_likes'];
+		if (d['actor_1_facebook_likes'] != undefined) actor1_likes = d['actor_1_facebook_likes'];
+		if (d['actor_2_name'] != undefined) actor2 = d['actor_2_name'];
+		if (d['actor_1_name'] != undefined) actor1 = d['actor_1_name'];
+		if (d['actor_3_name'] != undefined) actor3 = d['actor_3_name'];
+		return "<h5>" +d['movie_title']+"</h5><table><thread><tr><td>Name of director</td><td>Director facebook likes</td></tr></thread>"
+			+ "<tbody><tr><td>" + director + "</td><td>" + dir_likes + "</td></tr></tbody>"
+			+ "<thread><tr><td>Lead Actor</td><td>Lead facebook likes</td></tr></thread>"
+			+ "<tbody><tr><td>" + actor1 + "</td><td>" + actor1_likes + "</td></tr></tbody>"
+			+ "<thread><tr><td>Second Lead Actor</td><td>Actor facebook likes </td></tr></thread>"
+			+ "<tbody><tr><td>"+ actor2 + "</td><td>"+ actor2_likes + "</td></tr></tbody>"
+			+ "<thread><tr><td>Third Lead Actor</td><td>Actor facebook likes</td></tr></thread>"
+			+ "<tbody><tr><td>"+ actor3 + "</td><td>"+ actor3_likes + "</td></tr></tbody>"
+	});
+
+svg.call(tooltip);
+
 // Initializes a cell with a group
 SplomCell.prototype.init = function(g) {
 	var cell = d3.select(g);
@@ -99,10 +132,10 @@ SplomCell.prototype.updateScatter = function(g, data) {
 	yScale.domain(extentByAttribute['gross']).nice();
 	// Save a reference of this SplomCell, to use within anon function scopes
 	var _this = this;
-	
+
 	var dots = cell.selectAll('.dot')
         .data(data);
-		
+
 	var dotsEnter = dots.enter()
         .append('circle')
         .attr('class', 'dot')
@@ -113,13 +146,7 @@ SplomCell.prototype.updateScatter = function(g, data) {
             return yScale(d['gross']);
         })
 		.style('fill', function(d) { return continentColors[continent[d['country']]]; })
-        .attr('r', 4);
-		
-	dotsEnter.append('text')
-        .attr('y', -10)
-        .text(function(d) {
-            return d['movie_title'];
-        });
+        .attr('r', 3);
 		
 	dotsEnter
 		.on('mouseover', function(e) {
@@ -127,7 +154,9 @@ SplomCell.prototype.updateScatter = function(g, data) {
 		})
 		.on('mouseout', function(e) { 
 			svg.selectAll('.dot').classed('hidden', false);
-		});
+		})
+		.on('mouseenter', tooltip.show)
+		.on('mouseleave', tooltip.hide);
 }
 
 // Updates the histogram with dots by genre
@@ -201,7 +230,10 @@ SplomCell.prototype.updateHistogram = function(g, data, filterKey) {
 		})
 		.on('mouseout', function(e) { 
 			svg.selectAll('.dot').classed('hidden', false);
-		});
+		})
+		.on('mouseenter', tooltip.show)
+		.on('mouseleave', tooltip.hide);
+
 		
 	dots.merge(dotsEnter)
 		.attr('cx', 0)
@@ -368,7 +400,7 @@ function(error, dataset){
 		.attr('transform', 'translate(' + [cellWidth - 120, 5] + ')')
 		.attr('class', 'label')
 		.style('font-size', '22px')
-		.text('IMDB Movie Popularity, Costs, and Revenue');
+		.text('IMDB Movie Popularity, Costs, Revenue, Overall score');
 	// Chart Legends
 	keys.forEach(function(d, i) {
 		chartG.append('circle')
