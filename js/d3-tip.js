@@ -52,14 +52,14 @@ d3.tip = function() {
     coords = direction_callbacks[dir].apply(this)
     nodel.classed(dir, true)
       .style('top', function(d) {
-        if ((coords.top + poffset[0]) < 100) {
-            return (coords.top + 180 +poffset[0]) + scrollTop +'px'
+        if ((coords.top + poffset[0]) < 150) {
+            return (coords.top + 280 +poffset[0]) + scrollTop +'px'
         }
         return (coords.top + poffset[0]) + scrollTop + 'px'
       })
       .style('left', function(d) {
-        if ((coords.left +  poffset[1]) + scrollLeft < 20) {
-            return (coords.left + 50 + poffset[1]) + scrollLeft + 'px'
+        if ((coords.left +  poffset[1]) + scrollLeft < 50) {
+            return (coords.left + 80 + poffset[1]) + scrollLeft + 'px'
         }
         return (coords.left +  poffset[1]) + scrollLeft + 'px';
       });

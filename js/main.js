@@ -113,6 +113,12 @@ var tooltip = d3.tip()
 			+ "<tbody><tr><td>"+ gross + "</td><td>"+ budget + "</td></tr></tbody>"
 			+ "<thread><tr><td>country</td><td>Movie Facebook likes</td></tr></thread>"
 			+ "<tbody><tr><td>"+ country + "</td><td>"+ movie_facebook_likes + "</td></tr></tbody>"
+			+ "<thread><tr><td>Lead Actor</td><td>Content Number of likes</td></tr></thread>"
+			+ "<tbody><tr><td>" + d['actor_1_name'] + "</td><td>" + d['actor_1_facebook_likes'] + "</td></tr></tbody>"
+			+ "<thread><tr><td>Second Lead Actor (USD)</td><td>Number of Likes</td></tr></thread>"
+			+ "<tbody><tr><td>" + d['actor_2_name'] + "</td><td>" + d['actor_2_facebook_likes'] + "</td></tr></tbody>"
+			+ "<thread><tr><td>Supporting Actor</td><td>Number of Likes</td></tr></thread>"
+			+ "<tbody><tr><td>" + d['actor_3_name'] + "</td><td>" + d['actor_3_facebook_likes'] + "</td></tr></tbody>"
 	});
 
 svg.call(tooltip);
