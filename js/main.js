@@ -7,23 +7,8 @@ function onCategoryChanged() {
     cells[1].updateHistogram(cells[1], movies, category);
 }
 
-// Map of countries to their respective continents for coloring
-var continent = {'Germany': 'Europe', 'USA': 'Americas', 'China': 'Asia', 'Georgia': 'Asia', 'UK': 'Europe', 'Denmark': 'Europe',
-	'France': 'Europe', 'Iran': 'Middle East', 'Russia': 'Asia', 'New Zealand': 'Australia', 'India': 'Asia', 'Australia': 'Australia',
-	'Canada': 'Americas', 'Spain': 'Europe', 'Bulgaria': 'Europe', 'Mexico': 'Americas', 'Nigeria': 'Africa', 'Israel': 'Middle East',
-	'Italy': 'Europe', 'Czech Republic': 'Europe', 'Romania': 'Europe', 'Poland': 'Europe', 'Sweden': 'Europe', 'Bahamas': 'Americas',
-	'Brazil': 'Americas', 'Japan': 'Asia', 'Switzerland': 'Europe', 'Panama': 'Americas', 'Ireland': 'Europe', 'Norway': 'Europe',
-	'Hong Kong': 'Asia', 'Slovenia': 'Europe', 'South Korea': 'Asia', 'Pakistan': 'Middle East', 'South Africa': 'Africa', 'Finland': 'Europe',
-	'Cambodia': 'Asia', 'Greece': 'Europe', 'Hungary': 'Europe', 'Iceland': 'Europe', 'Kyrgyzstan': 'Asia', 'Thailand': 'Asia',
-	'Kenya': 'Africa', 'Chile': 'Americas', 'Taiwan': 'Asia', 'United Arab Emirates': 'Middle East', 'Belgium': 'Europe',
-	'Dominican Republic': 'Americas', 'Indonesia': 'Asia', 'Egypt': 'Africa'};
-var continentColors = {'Americas': 'red', 'Europe': 'orange', 'Asia': 'yellow', 'Middle East': 'green', 'Africa': 'blue', 'Australia': 'purple'};
-var keys = ['Americas', 'Europe', 'Asia', 'Middle East', 'Africa', 'Australia'];
-
 var scatColors = ['yellow', 'purple', 'cyan', 'black'];
-
-// TODO probably change colors... both sets...
-var valueColors = ['red','orange','green','blue'];
+var valueColors = ['red', 'orange', 'green', 'blue'];
 var histColorScale = d3.scaleThreshold().range(valueColors).domain([10000, 50000, 150000]);
 
 var svg = d3.select('svg');
@@ -73,7 +58,7 @@ xDataAttributes.forEach(function(attrX) {
 });
 
 // Create a brush object that spans the cells' dimensions
-var brush = d3.brushX() // TODO potentially figure out a way to brush the scatterplot and brushX the histogram?
+var brush = d3.brushX()
     .extent([[0, 0], [cellWidth, cellHeight]])
     .on('start', brushstart)
     .on('brush', brushmove)
@@ -105,15 +90,15 @@ var tooltip = d3.tip()
 		if (d['budget'] != undefined) budget = d['budget'];
 		if (d['country'] != undefined) country = d['country'];
 		if (d['movie_facebook_likes'] != undefined) movie_facebook_likes = d['movie_facebook_likes'];
-		return "<h5>" +d['movie_title']+"</h5><table><thread><tr><td>Name of director</td><td>Year</td></tr></thread>"
+		return "<h5>" +d['movie_title']+"</h5><table><thread><tr><td>Name of Director</td><td>Year</td></tr></thread>"
 			+ "<tbody><tr><td>" + director + "</td><td>" + year + "</td></tr></tbody>"
 			+ "<thread><tr><td>Duration (min)</td><td>Content Rating</td></tr></thread>"
 			+ "<tbody><tr><td>" + duration + "</td><td>" + content_rating + "</td></tr></tbody>"
 			+ "<thread><tr><td>Gross (USD)</td><td>Budget (USD)</td></tr></thread>"
 			+ "<tbody><tr><td>"+ gross + "</td><td>"+ budget + "</td></tr></tbody>"
-			+ "<thread><tr><td>country</td><td>Movie Facebook likes</td></tr></thread>"
+			+ "<thread><tr><td>Country</td><td>Movie Facebook Likes</td></tr></thread>"
 			+ "<tbody><tr><td>"+ country + "</td><td>"+ movie_facebook_likes + "</td></tr></tbody>"
-			+ "<thread><tr><td>Lead Actor</td><td>Content Number of likes</td></tr></thread>"
+			+ "<thread><tr><td>Lead Actor</td><td>Number of Likes</td></tr></thread>"
 			+ "<tbody><tr><td>" + d['actor_1_name'] + "</td><td>" + d['actor_1_facebook_likes'] + "</td></tr></tbody>"
 			+ "<thread><tr><td>Second Lead Actor (USD)</td><td>Number of Likes</td></tr></thread>"
 			+ "<tbody><tr><td>" + d['actor_2_name'] + "</td><td>" + d['actor_2_facebook_likes'] + "</td></tr></tbody>"
@@ -126,11 +111,6 @@ svg.call(tooltip);
 // Initializes a cell with a group
 SplomCell.prototype.init = function(g) {
 	var cell = d3.select(g);
-	// Create frame rectangle
-    cell.append('rect')
-		.attr('class', 'frame')
-		.attr('width', cellWidth)
-		.attr('height', cellHeight);
 }
 
 // Updates the scatterplot with correct dots
@@ -213,7 +193,6 @@ SplomCell.prototype.updateHistogram = function(g, data, filterKey) {
 				cellHeight + padding.t + cellPadding.t] + ')';
 		});
 	
-	// TODO remove this horrible hack. Properly use enter/merge/exit for bins and dots
 	svg.selectAll('.dot').remove();
 	var cellEnter = chartG.selectAll('cell')
 		.data(cells)
@@ -227,7 +206,7 @@ SplomCell.prototype.updateHistogram = function(g, data, filterKey) {
 	cellEnter.each(function(cell, i) {
 		cell.init(this);
 		if (i == 0) { // First cell Scatterplot
-			cell.updateScatter(this, newData); // DEBUG change movies to newData to filter by genre
+			cell.updateScatter(this, newData);
 		}
 	});
 		
@@ -240,7 +219,6 @@ SplomCell.prototype.updateHistogram = function(g, data, filterKey) {
 		.style('fill', function(d) { return histColorScale(d['movie_facebook_likes']); })
 		.attr('r', 4);
 		
-	// TODO implement some form of tooltip
 	dotsEnter
 		.on('mouseover', function(e) {
 			svg.selectAll('.dot').classed('hidden', function(d) { return e['movie_title'] != d['movie_title']; })
@@ -362,19 +340,6 @@ function(error, dataset){
             xScale.domain(extentByAttribute[attribute]).nice();
             d3.select(this).call(xAxis);
         });
-		
-	// Debug code
-	var allGenres = {};
-	newDataset.forEach(function(d) {
-		d['genres'].forEach(function(e) {
-			if (!allGenres[e]) {
-				allGenres[e] = 1;
-			} else {
-				allGenres[e]++;
-			}
-		});
-	});
-	console.log(allGenres);
 	
 	var cellEnter = chartG.selectAll('cell')
 		.data(cells)
@@ -389,13 +354,10 @@ function(error, dataset){
 	cellEnter.append('g')
 		.attr('class', 'brush')
 		.call(brush);
-	// TODO potentially add zoom to scatterplot? May help for the bottom left corner mess
 		
 	cellEnter.each(function(cell, i) {
 		cell.init(this);
-		if (i == 0) { // First cell Scatterplot
-			//cell.updateScatter(this, data); // DEBUG useless with current hack - put back in upon fixing
-		} else { // Second cell Histogram
+		if (i == 1) { // Second cell Histogram
 			cell.updateHistogram(this, newDataset, 'All Genres')
 		}
 	});
@@ -461,7 +423,6 @@ function(error, dataset){
 		.attr('transform', 'translate(' + [cellPadding.l + padding.i, 140] + ')')
 		.text('Highest Number of Facebook Likes')
 		.style('font-size', 16);
-	// TODO decide on genres to include. Currently uses: all genres with at least 100 movies (101 and 102 both exist)
 });
 
 function brushstart(cell) {
