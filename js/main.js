@@ -87,29 +87,29 @@ var tooltip = d3.tip()
 	.offset([-12, 0])
 	.html(function(d) {
 		var director = "Unkown";
-		var dir_likes = "Unkown";
-		var actor3_likes = "Unkown";
-		var actor2_likes = "Unkown";
-		var actor1_likes = "Unkown";
-		var actor2 = "Unkown";
-		var actor1 = "Unkown";
-		var actor3 = "Unkown";
+		var year = "Unkown";
+		var content_rating = "Unkown";
+		var duration = "Unkown";
+		var gross = "Unkown";
+		var budget = "Unkown";
+		var country = "Unkown";
+		var movie_facebook_likes = "Unkown";
 		if (d['director_name'] != undefined) director = d['director_name'];
-		if (d["director_facebook_likes"] != undefined) dir_likes = d['director_facebook_likes'];
-		if (d['actor_3_facebook_likes'] != undefined) actor3_likes = d['actor_3_facebook_likes'];
-		if (d['actor_2_facebook_likes'] != undefined) actor2_likes = d['actor_2_facebook_likes'];
-		if (d['actor_1_facebook_likes'] != undefined) actor1_likes = d['actor_1_facebook_likes'];
-		if (d['actor_2_name'] != undefined) actor2 = d['actor_2_name'];
-		if (d['actor_1_name'] != undefined) actor1 = d['actor_1_name'];
-		if (d['actor_3_name'] != undefined) actor3 = d['actor_3_name'];
-		return "<h5>" +d['movie_title']+"</h5><table><thread><tr><td>Name of director</td><td>Director facebook likes</td></tr></thread>"
-			+ "<tbody><tr><td>" + director + "</td><td>" + dir_likes + "</td></tr></tbody>"
-			+ "<thread><tr><td>Lead Actor</td><td>Lead facebook likes</td></tr></thread>"
-			+ "<tbody><tr><td>" + actor1 + "</td><td>" + actor1_likes + "</td></tr></tbody>"
-			+ "<thread><tr><td>Second Lead Actor</td><td>Actor facebook likes </td></tr></thread>"
-			+ "<tbody><tr><td>"+ actor2 + "</td><td>"+ actor2_likes + "</td></tr></tbody>"
-			+ "<thread><tr><td>Third Lead Actor</td><td>Actor facebook likes</td></tr></thread>"
-			+ "<tbody><tr><td>"+ actor3 + "</td><td>"+ actor3_likes + "</td></tr></tbody>"
+		if (d["year"] != undefined) year = d['year'];
+		if (d['content_rating'] != undefined) content_rating = d['content_rating'];
+		if (d['duration'] != undefined) duration = d['duration'];
+		if (d['gross'] != undefined) gross = d['gross'];
+		if (d['budget'] != undefined) budget = d['budget'];
+		if (d['country'] != undefined) country = d['country'];
+		if (d['movie_facebook_likes'] != undefined) movie_facebook_likes = d['movie_facebook_likes'];
+		return "<h5>" +d['movie_title']+"</h5><table><thread><tr><td>Name of director</td><td>Year</td></tr></thread>"
+			+ "<tbody><tr><td>" + director + "</td><td>" + year + "</td></tr></tbody>"
+			+ "<thread><tr><td>Duration (min)</td><td>Content Rating</td></tr></thread>"
+			+ "<tbody><tr><td>" + duration + "</td><td>" + content_rating + "</td></tr></tbody>"
+			+ "<thread><tr><td>Gross (USD)</td><td>Budget (USD)</td></tr></thread>"
+			+ "<tbody><tr><td>"+ gross + "</td><td>"+ budget + "</td></tr></tbody>"
+			+ "<thread><tr><td>Country of origin</td><td>Number of Facebook likes</td></tr></thread>"
+			+ "<tbody><tr><td>"+ country + "</td><td>"+ movie_facebook_likes + "</td></tr></tbody>"
 	});
 
 svg.call(tooltip);
