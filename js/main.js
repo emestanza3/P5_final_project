@@ -100,12 +100,8 @@ SplomCell.prototype.updateScatter = function(g, data) {
 	// Save a reference of this SplomCell, to use within anon function scopes
 	var _this = this;
 	
-	var filteredData = data.filter(function(d) {
-		return !d.budget == 0 && !d.gross == 0;
-		});
-	
 	var dots = cell.selectAll('.dot')
-        .data(filteredData);
+        .data(data);
 		
 	var dotsEnter = dots.enter()
         .append('circle')
@@ -185,7 +181,7 @@ SplomCell.prototype.updateHistogram = function(g, data, filterKey) {
 	cellEnter.each(function(cell, i) {
 		cell.init(this);
 		if (i == 0) { // First cell Scatterplot
-			cell.updateScatter(this, movies); // DEBUG change movies to newData to filter by genre
+			cell.updateScatter(this, newData); // DEBUG change movies to newData to filter by genre
 		}
 	});
 		
@@ -261,10 +257,20 @@ function(error, dataset){
     }
 
     // **** Your JavaScript code goes here ****
-	// TODO scrub data for duplicate movie titles - because that's yet another flaw of this data...
-	var data = dataset; // Temp from initial data adjustments
-	
-	movies = data; // For global calls
+	var filteredData = dataset.filter(function(d) { // Remove no budget/gross data
+		return !d.budget == 0 && !d.gross == 0;
+		});
+	var newDataset = [];
+	filteredData.forEach(row => { // Remove duplicates
+		var bool = true;
+		newDataset.forEach(function(d) {
+			if (d['movie_title'] == row['movie_title']) {
+				bool = false;
+			}
+		});
+		if (bool) newDataset.push(row);
+	});
+	movies = newDataset; // For global calls
 	
 	// Create map for each attribute's extent
     xDataAttributes.forEach(function(attribute) {
@@ -310,7 +316,7 @@ function(error, dataset){
 		
 	// Debug code
 	var allGenres = {};
-	data.forEach(function(d) {
+	newDataset.forEach(function(d) {
 		d['genres'].forEach(function(e) {
 			if (!allGenres[e]) {
 				allGenres[e] = 1;
@@ -320,13 +326,6 @@ function(error, dataset){
 		});
 	});
 	console.log(allGenres);
-	// Debug code
-	var colorNest = d3.nest()
-		.key(function(d) {
-			return d['imdb_score'];
-		})
-		.entries(data);
-	console.log(colorNest);
 	
 	var cellEnter = chartG.selectAll('cell')
 		.data(cells)
@@ -348,7 +347,7 @@ function(error, dataset){
 		if (i == 0) { // First cell Scatterplot
 			//cell.updateScatter(this, data); // DEBUG useless with current hack - put back in upon fixing
 		} else { // Second cell Histogram
-			cell.updateHistogram(this, data, 'All Genres')
+			cell.updateHistogram(this, newDataset, 'All Genres')
 		}
 	});
 	
