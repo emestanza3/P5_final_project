@@ -98,7 +98,7 @@ var tooltip = d3.tip()
 		var country = "Unkown";
 		var movie_facebook_likes = "Unkown";
 		if (d['director_name'] != undefined) director = d['director_name'];
-		if (d["year"] != undefined) year = d['year'];
+		if (d["title_year"] != undefined) year = d['title_year'];
 		if (d['content_rating'] != undefined) content_rating = d['content_rating'];
 		if (d['duration'] != undefined) duration = d['duration'];
 		if (d['gross'] != undefined) gross = d['gross'];
