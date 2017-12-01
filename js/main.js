@@ -19,8 +19,11 @@ var continent = {'Germany': 'Europe', 'USA': 'Americas', 'China': 'Asia', 'Georg
 	'Dominican Republic': 'Americas', 'Indonesia': 'Asia', 'Egypt': 'Africa'};
 var continentColors = {'Americas': 'red', 'Europe': 'orange', 'Asia': 'yellow', 'Middle East': 'green', 'Africa': 'blue', 'Australia': 'purple'};
 var keys = ['Americas', 'Europe', 'Asia', 'Middle East', 'Africa', 'Australia'];
+
+var scatColors = ['yellow', 'purple', 'cyan', 'black'];
+
 // TODO probably change colors... both sets...
-var valueColors = ['#fcc9b5','#fa8873','#d44951','#843540'];
+var valueColors = ['red','orange','green','blue'];
 var histColorScale = d3.scaleThreshold().range(valueColors).domain([10000, 50000, 150000]);
 
 var svg = d3.select('svg');
@@ -108,7 +111,7 @@ var tooltip = d3.tip()
 			+ "<tbody><tr><td>" + duration + "</td><td>" + content_rating + "</td></tr></tbody>"
 			+ "<thread><tr><td>Gross (USD)</td><td>Budget (USD)</td></tr></thread>"
 			+ "<tbody><tr><td>"+ gross + "</td><td>"+ budget + "</td></tr></tbody>"
-			+ "<thread><tr><td>Country of origin</td><td>Number of Facebook likes</td></tr></thread>"
+			+ "<thread><tr><td>country</td><td>Movie Facebook likes</td></tr></thread>"
 			+ "<tbody><tr><td>"+ country + "</td><td>"+ movie_facebook_likes + "</td></tr></tbody>"
 	});
 
@@ -145,7 +148,15 @@ SplomCell.prototype.updateScatter = function(g, data) {
 		.attr('cy', function(d){
             return yScale(d['gross']);
         })
-		.style('fill', function(d) { return continentColors[continent[d['country']]]; })
+		.style('fill', function(d) { 
+			var largest = 0
+			var likes = undefined;
+			if (d['director_facebook_likes'] > largest) { largest = d['director_facebook_likes']; likes = scatColors[0]}
+			if (d['actor_3_facebook_likes'] > largest) { largest = d['actor_3_facebook_likes']; likes = scatColors[3]}
+			if (d['actor_2_facebook_likes'] > largest) { largest = d['actor_2_facebook_likes']; likes = scatColors[2]}
+			if (d['actor_1_facebook_likes'] > largest) { largest = d['actor_1_facebook_likes']; likes = scatColors[1]}
+			return likes;
+		})
         .attr('r', 3);
 		
 	dotsEnter
@@ -402,20 +413,18 @@ function(error, dataset){
 		.style('font-size', '22px')
 		.text('IMDB Movie Popularity, Costs, Revenue, Overall score');
 	// Chart Legends
-	keys.forEach(function(d, i) {
+	scatColors.forEach(function(d, i) {
 		chartG.append('circle')
 			.attr('cx', 80)
 			.attr('cy', 40 + i * 22)
-			.style('fill', continentColors[d])
+			.style('fill', scatColors[i])
 			.attr('r', 10);
 		chartG.append('text')
 			.text(function(e) { // Text by legend color
-				if (i == 0) { return 'Americas'; }
-				else if (i == 1) { return 'Europe'; }
-				else if (i == 2) { return 'Asia'; }
-				else if (i == 3) { return 'Middle East'; }
-				else if (i == 4) { return 'Africa'; }
-				else if (i == 5) { return 'Australia'; }
+				if (i == 0) { return 'Director'; }
+				else if (i == 1) { return 'Lead Actor'; }
+				else if (i == 2) { return 'Second Lead'; }
+				else if (i == 3) { return 'Support Actor'; }
 			})
 			.attr('transform', 'translate(' + [92, 46 + i * 22] + ')')
 			.style('font-size', 16);
@@ -440,6 +449,11 @@ function(error, dataset){
 	chartG.append('text')
 		.attr('transform', 'translate(' + [cellWidth + cellPadding.l + padding.i + 25, 120] + ')')
 		.text('Facebook Likes')
+		.style('font-size', 16);
+
+	chartG.append('text')
+		.attr('transform', 'translate(' + [cellPadding.l + padding.i, 140] + ')')
+		.text('Highest Number of Facebook Likes')
 		.style('font-size', 16);
 	// TODO decide on genres to include. Currently uses: all genres with at least 100 movies (101 and 102 both exist)
 });
